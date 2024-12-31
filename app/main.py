@@ -18,8 +18,6 @@ def main():
         print(f"Received: {command}")
         if command == "PING":
             client_socket.sendall(b"+PONG\r\n")
-        else:
-            client_socket.sendall(b"-ERR unknown command\r\n")
 
 if __name__ == "__main__":
     main()
