@@ -18,20 +18,17 @@ def parse_input(data):
         return lines[1].decode()
     elif first_byte == b"*"[0]:  # Array
         lines = data.split(b"\r\n")
-        print(lines)
         num_elements = int(lines[0][1:])
-        print(num_elements)
         if num_elements == 0:
             return []  # Empty array
         result = []
         i = 1
         
-        while i < len(lines):
+        while i < num_elements * 2:
             line = lines[i]
             if line.startswith(b"$"):
-                length = int(line[1:])
                 result.append(lines[i + 1].decode())
-                i += 2
+                i += 1
             i += 1
         return result
     else:
