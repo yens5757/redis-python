@@ -9,15 +9,9 @@ def main():
     
     server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
     client_socket, client_address = server_socket.accept() # wait for client
-    while True:
-        data = client_socket.recv(1024)
-        if not data:
-            break
-        # Assuming the client sends `PING\r\n`
-        command = data.decode('utf-8').strip()
-        print(f"Received: {command}")
-        if command == "PING":
-            client_socket.sendall(b"+PONG\r\n")
+    while client_socket:
+        if "PING" in client_socket.recv(1024).decode():
+            client_socket.send("+PONG\r\n".encode())
 
 if __name__ == "__main__":
     main()
