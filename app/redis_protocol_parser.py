@@ -42,6 +42,7 @@ class RedisProtocolParser:
             return []  # Empty array
         result = []
         i = 1
+        
         while i < len(lines):
             line = lines[i]
             if line.startswith(b"$"):
