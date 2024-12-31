@@ -20,6 +20,7 @@ def parse_input(data):
         lines = data.split(b"\r\n")
         print(lines)
         num_elements = int(lines[0][1:])
+        print(num_elements)
         if num_elements == 0:
             return []  # Empty array
         result = []
