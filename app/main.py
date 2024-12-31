@@ -1,5 +1,5 @@
 import asyncio
-from app.redis_protocol_parser import RedisProtocolParser
+from redis_protocol_parser import RedisProtocolParser
 
 async def handle_client(reader, writer):
     while True:
