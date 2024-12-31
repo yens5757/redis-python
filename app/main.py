@@ -9,8 +9,12 @@ def main():
     
     server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
     client_socket, client_address = server_socket.accept() # wait for client
-    client_socket.sendall("+PONG\r\n".encode('utf-8'))  # Convert string to bytes before sending
-
+    data = client_socket.recv(1024)
+    split_data = data.split("PING")
+    reply_string = ""
+    for _ in len(split_data):
+        reply_string += b"+PONG\r\n"
+    client_socket.sendall(reply_string)  # Convert string to bytes before sending
 
 if __name__ == "__main__":
     main()
