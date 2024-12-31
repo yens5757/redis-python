@@ -42,6 +42,9 @@ async def handle_client(reader, writer):
         result = parse_input(data)
         print(result)
         if result[0] == "ECHO":
+            reply = "+"
+            reply += result[1]
+            reply += "\r\n"
             writer.write(result[1].encode())
         elif result[0] == "PING":
             writer.write(b"+PONG\r\n")
