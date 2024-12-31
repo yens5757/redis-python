@@ -7,8 +7,7 @@ async def handle_client(reader, writer):
         data = await reader.read(1024)
         if not data:
             break
-        message = data.decode().strip()
-        if message == "PING":
+        if "PING" in data.decode():
             writer.write("+PONG\r\n".encode())
             await writer.drain()
 
