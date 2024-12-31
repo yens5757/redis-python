@@ -45,7 +45,7 @@ async def handle_client(reader, writer):
             reply = "+"
             reply += result[1]
             reply += "\r\n"
-            writer.write(result[1].encode())
+            writer.write(reply.encode())
         elif result[0] == "PING":
             writer.write(b"+PONG\r\n")
 
