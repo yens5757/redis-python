@@ -18,6 +18,7 @@ def parse_input(data):
         return lines[1].decode()
     elif first_byte == b"*"[0]:  # Array
         lines = data.split(b"\r\n")
+        print(lines)
         num_elements = int(lines[0][1:])
         if num_elements == 0:
             return []  # Empty array
