@@ -3,6 +3,7 @@ import asyncio
 
 async def handle_client(reader, writer):
     while True:
+        print("TRue")
         data = await reader.read(1024)
         if not data:
             break
