@@ -102,8 +102,8 @@ async def main():
 if __name__ == "__main__":
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Redis-like server")
-    parser.add_argument("--dir", required=True, help="Directory to store data files")
-    parser.add_argument("--dbfilename", required=True, help="Name of the database file")
+    parser.add_argument("--dir", required=False, help="Directory to store data files")
+    parser.add_argument("--dbfilename", required=False, help="Name of the database file")
     args = parser.parse_args()
     # Configure the server
     server_config["dir"] = args.dir
