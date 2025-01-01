@@ -36,7 +36,7 @@ def parse_input(data):
         raise ValueError("Unknown RESP type")
 
 async def handle_client(reader, writer):
-    
+    global db
     while True:
         data = await reader.read(1024)
         if not data:
