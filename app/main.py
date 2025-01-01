@@ -51,7 +51,7 @@ async def handle_client(reader, writer):
             writer.write(b"+OK\r\n")
         elif result[0] == "GET":
             if result[1] in client_hashmap:
-                writer.write(f"$3\r\n{client_hashmap[result[1]]}\r\n")
+                writer.write(f"$3\r\n{client_hashmap[result[1]]}\r\n".encode())
         
 async def main():
     # await for more clients while handling the connected client socket
