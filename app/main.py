@@ -52,10 +52,7 @@ async def handle_client(reader, writer):
             global_hashmap[result[1]] = result[2]
             writer.write(b"+OK\r\n")
             print(result)
-            if len(result) > 3:
-                if result[3] == "px":
-                    await asyncio.sleep(0.15)
-                    del global_hashmap[result[1]]
+            print(len(result))
         elif result[0] == "GET":
             if result[1] in global_hashmap:
                 writer.write(f"${len(global_hashmap[result[1]])}\r\n{global_hashmap[result[1]]}\r\n".encode())
