@@ -1,8 +1,18 @@
 import asyncio
+import argparse
+import os
+
+server_config = {
+    "dir": None,
+    "dbfilename": None
+}
 
 global_hashmap = {}
 
 def parse_input(data):
+    """
+    Redis protocol parser
+    """
     if not data:
         raise ValueError("No data to parse")
     first_byte = data[0]
@@ -37,6 +47,9 @@ def parse_input(data):
         raise ValueError("Unknown RESP type")
 
 async def handle_client(reader, writer):
+    """
+    Handle an indiviual client
+    """
     global global_hashmap
     while True:
         data = await reader.read(1024)
@@ -61,6 +74,11 @@ async def handle_client(reader, writer):
                 writer.write(f"${len(global_hashmap[result[1]])}\r\n{global_hashmap[result[1]]}\r\n".encode())
             else:
                 writer.write(b"$-1\r\n")
+        elif result[0] == "CONFIG" and result[1] == "GET":
+            if result[2] == "dir":
+                writer.write(server_config["dir"].encode())
+            elif result[2] == "dbfilename":
+                writer.write(server_config["dbfilename"].encode())
 
 async def delete_key_after_delay(key, delay_ms):
     """
@@ -82,4 +100,13 @@ async def main():
 
 
 if __name__ == "__main__":
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description="Redis-like server")
+    parser.add_argument("--dir", required=True, help="Directory to store data files")
+    parser.add_argument("--dbfilename", required=True, help="Name of the database file")
+    args = parser.parse_args()
+    # Configure the server
+    server_config["dir"] = args.dir
+    server_config["dbfilename"] = args.dbfilename
+
     asyncio.run(main())
