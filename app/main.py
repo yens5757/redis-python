@@ -1,5 +1,7 @@
 import asyncio
 
+global_hashmap = {}
+
 def parse_input(data):
     if not data:
         raise ValueError("No data to parse")
@@ -35,7 +37,7 @@ def parse_input(data):
         raise ValueError("Unknown RESP type")
 
 async def handle_client(reader, writer):
-    client_hashmap = {}
+    global global_hashmap
     while True:
         data = await reader.read(1024)
         if not data:
@@ -47,12 +49,17 @@ async def handle_client(reader, writer):
         elif result[0] == "PING":
             writer.write(b"+PONG\r\n")
         elif result[0] == "SET":
-            client_hashmap[result[1]] = result[2]
+            global_hashmap[result[1]] = result[2]
             writer.write(b"+OK\r\n")
+            if len(result) > 3:
+                if result[3] == "px":
+                    await asyncio.sleep(int(result[4]))
+                    del global_hashmap[result[1]]
         elif result[0] == "GET":
-            if result[1] in client_hashmap:
-                writer.write(f"${len(client_hashmap[result[1]])}\r\n{client_hashmap[result[1]]}\r\n".encode())
-        
+            if result[1] in global_hashmap:
+                writer.write(f"${len(global_hashmap[result[1]])}\r\n{global_hashmap[result[1]]}\r\n".encode())
+            else:
+                writer.write(b"$-1\r\n")
 async def main():
     # await for more clients while handling the connected client socket
     server = await asyncio.start_server(handle_client, "localhost", 6379)
