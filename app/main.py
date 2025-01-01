@@ -1,5 +1,6 @@
 import asyncio
 
+db = {}
 def parse_input(data):
     if not data:
         raise ValueError("No data to parse")
@@ -35,7 +36,7 @@ def parse_input(data):
         raise ValueError("Unknown RESP type")
 
 async def handle_client(reader, writer):
-    client_hashmap = {}
+    
     while True:
         data = await reader.read(1024)
         if not data:
@@ -47,11 +48,13 @@ async def handle_client(reader, writer):
         elif result[0] == "PING":
             writer.write(b"+PONG\r\n")
         elif result[0] == "SET":
-            client_hashmap[result[1]] = result[2]
+            db[result[1]] = result[2]
             writer.write(b"+OK\r\n")
         elif result[0] == "GET":
-            if result[1] in client_hashmap:
-                writer.write(f"${len(client_hashmap[result[1]])}\r\n{client_hashmap[result[1]]}\r\n".encode())
+            if result[1] in db:
+                writer.write(f"${len(db[result[1]])}\r\n{db[result[1]]}\r\n".encode())
+            else:
+                writer.write(b"$-1\r\n")
         
 async def main():
     # await for more clients while handling the connected client socket
