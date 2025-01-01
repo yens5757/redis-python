@@ -23,7 +23,7 @@ def parse_input(data):
             return []  # Empty array
         result = []
         i = 1
-        
+        # go through each elements in the array
         while i < num_elements * 2:
             line = lines[i]
             if line.startswith(b"$"):
@@ -35,20 +35,23 @@ def parse_input(data):
         raise ValueError("Unknown RESP type")
 
 async def handle_client(reader, writer):
+    client_hashmap = {}
     while True:
         data = await reader.read(1024)
         if not data:
             break
         result = parse_input(data)
-        print(result)
+        # after parsing, process the input
         if result[0] == "ECHO":
-            reply = "+"
-            reply += result[1]
-            reply += "\r\n"
-            writer.write(reply.encode())
+            writer.write(f"+{result[1]}\r\n".encode())
         elif result[0] == "PING":
             writer.write(b"+PONG\r\n")
-
+        elif result[0] == "SET":
+            client_hashmap[result[1]] = result[2]
+            writer.write(b"+OK\r\n")
+        elif result[0] == "GET":
+            if result[1] in client_hashmap:
+                writer.write(f"$3\r\n{client_hashmap[result[1]]}\r\n")
         
 async def main():
     # await for more clients while handling the connected client socket
