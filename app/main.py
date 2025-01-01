@@ -51,6 +51,7 @@ async def handle_client(reader, writer):
         elif result[0] == "SET":
             global_hashmap[result[1]] = result[2]
             writer.write(b"+OK\r\n")
+            print(result)
             if len(result) > 3:
                 if result[3] == "px":
                     await asyncio.sleep(int(result[4]) / 1000)
