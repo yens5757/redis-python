@@ -76,9 +76,9 @@ async def handle_client(reader, writer):
                 writer.write(b"$-1\r\n")
         elif result[0] == "CONFIG" and result[1] == "GET":
             if result[2] == "dir":
-                writer.write(server_config["dir"].encode())
+                writer.write(f"*2\r\n$3\r\ndir\r\n${len(server_config["dir"])}\r\n{server_config["dir"]}\r\n".encode())
             elif result[2] == "dbfilename":
-                writer.write(server_config["dbfilename"].encode())
+                writer.write(f"*2\r\n$10\r\ndbfilename\r\n${len(server_config["dbfilename"])}\r\n{server_config["dbfilename"]}\r\n".encode())
 
 async def delete_key_after_delay(key, delay_ms):
     """
