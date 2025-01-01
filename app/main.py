@@ -53,17 +53,24 @@ async def handle_client(reader, writer):
             writer.write(b"+OK\r\n")
             print(result)
             print(len(result))
-            if len(result) > 3:
-                if result[3] == "px":
-                    await asyncio.sleep(1)  # Convert ms to seconds
-                    if result[1] in global_hashmap:
-                        del global_hashmap[result[1]]
-                        print(f"Key '{result[1]}' deleted.")
+            # delete the key after ms waited
+            if len(result) > 3 and result[3] == "px" and result[1] in global_hashmap:
+                asyncio.create_task(delete_key_after_delay(result[1], result[4]))
         elif result[0] == "GET":
             if result[1] in global_hashmap:
                 writer.write(f"${len(global_hashmap[result[1]])}\r\n{global_hashmap[result[1]]}\r\n".encode())
             else:
                 writer.write(b"$-1\r\n")
+
+async def delete_key_after_delay(key, delay_ms):
+    """
+    Wait for 'delay_ms' milliseconds and then delete the key.
+    """
+    await asyncio.sleep(delay_ms / 1000)  # Convert ms to seconds
+    if key in global_hashmap:
+        del global_hashmap[key]
+        print(f"Key '{key}' deleted after {delay_ms} ms.")
+
 async def main():
     # await for more clients while handling the connected client socket
     server = await asyncio.start_server(handle_client, "localhost", 6379)
