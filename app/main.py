@@ -55,7 +55,7 @@ async def handle_client(reader, writer):
             print(len(result))
             if len(result) > 3:
                 if result[3] == "px":
-                    await asyncio.sleep(0.5)  # Convert ms to seconds
+                    await asyncio.sleep(1)  # Convert ms to seconds
                     if result[1] in global_hashmap:
                         del global_hashmap[result[1]]
                         print(f"Key '{result[1]}' deleted.")
