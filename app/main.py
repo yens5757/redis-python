@@ -95,12 +95,18 @@ def read_file(directory, filename):
     with open(file_path, 'rb') as file:
         rdb_content = file.read()
         print(rdb_content)
-        version_check = rdb_content[:9].decode('ascii')
-        if version_check != "REDIS0011":
+        header = rdb_content[:9].decode('ascii')
+        magic, version = header[:5], header[5:]
+        print(f"Magic: {magic}, Version: {version}")
+        if magic != "REDIS":
+            print("magic is not correct")
+            return
+        if not version.isdigit():
             print("version is not correct")
             return
+        first_index = rdb_content.find(b'\x04')
+        print(first_index)
         
-
 
 
 async def delete_key_after_delay(key, delay_ms):
