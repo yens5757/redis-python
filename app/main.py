@@ -95,7 +95,12 @@ def read_file(directory, filename):
     with open(file_path, 'rb') as file:
         rdb_content = file.read()
         print(rdb_content)
-        print(rdb_content[:9])
+        version_check = rdb_content[:9].decode('ascii')
+        if version_check != "REDIS0011":
+            print("version is not correct")
+            return
+        
+
 
 
 async def delete_key_after_delay(key, delay_ms):
