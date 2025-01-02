@@ -94,7 +94,8 @@ def read_file(directory, filename):
     file_path = os.path.join(directory, filename)
     with open(file_path, 'rb') as file:
         rdb_content = str(file.read())
-        print(rdb_content)
+        arr = rdb_content.split(("/"))
+        print(arr)
 
 async def delete_key_after_delay(key, delay_ms):
     """
