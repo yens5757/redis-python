@@ -104,7 +104,7 @@ def read_file(directory, filename):
         if not version.isdigit():
             print("version is not correct")
             return
-        first_index = rdb_content.find(b'\x04')
+        first_index = rdb_content.find(b'\x')
         print(first_index)
         
 
