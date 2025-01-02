@@ -1,11 +1,14 @@
 import asyncio
 import argparse
 import os
+import struct
 
 server_config = {
     "dir": None,
     "dbfilename": None
 }
+
+meta_data = {}
 
 global_hashmap = {}
 
@@ -90,6 +93,33 @@ async def handle_client(reader, writer):
             elif result[2] == "dbfilename":
                 writer.write(f"*2\r\n$10\r\ndbfilename\r\n${len(server_config["dbfilename"])}\r\n{server_config["dbfilename"]}\r\n".encode())
 
+def parse_metadata(data):
+    offset = 0
+    while offset < len(data):
+        marker = data[offset]
+        offset += 1
+        if marker == 0xFA:
+            length = data[offset]
+            offset += 1
+            key = data[offset:offset+length].decode('utf-8')
+            offset += length
+            print("Key:", key)
+        elif marker == 0xFB:
+            value = struct.unpack('>I', data[offset:offset+4])[0]
+            offset += 4
+            print("Numeric Value:", value)
+        elif marker == 0xFF:
+            checksum = data[offset:offset+6]
+            offset += 6
+            print("Checksum:", checksum.hex())
+        else:
+            print("Unknown marker:", hex(marker))
+            break
+
+
+
+
+
 def read_file(directory, filename):
     file_path = os.path.join(directory, filename)
     with open(file_path, 'rb') as file:
@@ -104,9 +134,6 @@ def read_file(directory, filename):
         if not version.isdigit():
             print("version is not correct")
             return
-        first_index = rdb_content.find(b'\x')
-        print(first_index)
-        
 
 
 async def delete_key_after_delay(key, delay_ms):
