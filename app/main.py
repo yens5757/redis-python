@@ -93,7 +93,7 @@ async def handle_client(reader, writer):
 def read_file(directory, filename):
     file_path = os.path.join(directory, filename)
     with open(file_path, 'rb') as file:
-        rdb_content = file.read().decode()
+        rdb_content = file.read()
         print(rdb_content)
         print(rdb_content[:9])
 
