@@ -46,6 +46,16 @@ def parse_input(data):
     else:
         raise ValueError("Unknown RESP type")
 
+def is_file_in_dir(directory, filename):
+    """
+    Check if file exist in directory
+    """
+    try:
+        file_path = os.path.join(directory, filename)
+        return os.path.isfile(file_path)
+    except:
+        return False
+
 async def handle_client(reader, writer):
     """
     Handle an indiviual client
@@ -80,6 +90,12 @@ async def handle_client(reader, writer):
             elif result[2] == "dbfilename":
                 writer.write(f"*2\r\n$10\r\ndbfilename\r\n${len(server_config["dbfilename"])}\r\n{server_config["dbfilename"]}\r\n".encode())
 
+def read_file(directory, filename):
+    file_path = os.path.join(directory, filename)
+    with open(file_path, 'rb') as file:
+        rdb_content = str(file.read())
+        print(rdb_content)
+
 async def delete_key_after_delay(key, delay_ms):
     """
     Wait for 'delay_ms' milliseconds and then delete the key.
@@ -108,5 +124,8 @@ if __name__ == "__main__":
     # Configure the server
     server_config["dir"] = args.dir
     server_config["dbfilename"] = args.dbfilename
-
+    if server_config["dir"] and server_config["dbfilename"] and is_file_in_dir(server_config["dir"], server_config["dbfilename"]):
+        print("read file")
+        read_file(server_config["dir"], server_config["dbfilename"])
+        
     asyncio.run(main())
