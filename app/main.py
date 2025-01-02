@@ -93,9 +93,8 @@ async def handle_client(reader, writer):
 def read_file(directory, filename):
     file_path = os.path.join(directory, filename)
     with open(file_path, 'rb') as file:
-        rdb_content = str(file.read())
-        arr = rdb_content.split(("/"))
-        print(arr)
+        rdb_content = file.read()
+        print(rdb_content)
 
 async def delete_key_after_delay(key, delay_ms):
     """
