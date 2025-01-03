@@ -102,6 +102,7 @@ def parse_metadata(data):
             try:
                 # Read the name of the metadata attribute
                 name_length = data[offset]
+                print(name_length)
                 offset += 1
                 name_bytes = data[offset:offset + name_length]
                 offset += name_length
@@ -112,6 +113,7 @@ def parse_metadata(data):
                  
                 # Read the value of the metadata attribute
                 value_length = data[offset]
+                print(value_length)
                 offset += 1
                 value_bytes = data[offset:offset + value_length]
                 offset += value_length
