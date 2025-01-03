@@ -110,7 +110,8 @@ def parse_metadata(data):
                 value_length = data[offset]
                 print(data[offset])
                 offset += 1
-                value = data[offset:offset + value_length]
+                value = data[offset:offset + value_length].decode('utf-8')
+                offset += value_length
                 
                 meta_data[name] = value
                 print(f"Key: {name}, Value: {value}")
