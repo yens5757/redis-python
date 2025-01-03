@@ -134,6 +134,7 @@ def read_file(directory, filename):
         if not version.isdigit():
             print("version is not correct")
             return
+        parse_metadata(rdb_content[9:])
 
 
 async def delete_key_after_delay(key, delay_ms):
