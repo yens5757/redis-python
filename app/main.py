@@ -102,25 +102,29 @@ def parse_metadata(data):
             try:
                 # Read the name of the metadata attribute
                 name_length = data[offset]
-                print(name_length)
                 offset += 1
-                name_bytes = data[offset:offset + name_length]
+                name = data[offset:offset + name_length].decode('utf-8')
                 offset += name_length
-                try:
-                    name = name_bytes.decode('utf-8')  # Decode as UTF-8 if possible
-                except UnicodeDecodeError:
-                    name = name_bytes.hex()  # Fallback to hexadecimal representation
                  
                 # Read the value of the metadata attribute
                 value_length = data[offset]
-                print(value_length)
                 offset += 1
-                value_bytes = data[offset:offset + value_length]
-                offset += value_length
-                try:
-                    value = value_bytes.decode('utf-8')  # Decode as UTF-8 if possible
-                except UnicodeDecodeError:
-                    value = value_bytes.hex()  # Fallback to hexadecimal representation
+                if value_length & 0xC0 == 0xC0:  # Special string encoding (0b11xxxxxx)
+                    encoding_type = value_length & 0x3F  # Last 6 bits
+                    if encoding_type == 0:  # 8-bit integer
+                        value = str(data[offset])
+                        offset += 1
+                    elif encoding_type == 1:  # 16-bit integer
+                        value = str(int.from_bytes(data[offset:offset + 2], "little"))
+                        offset += 2
+                    elif encoding_type == 2:  # 32-bit integer
+                        value = str(int.from_bytes(data[offset:offset + 4], "little"))
+                        offset += 4
+                    else:
+                        raise ValueError(f"Unsupported encoding type: {encoding_type}")
+                else:  # Regular string encoding
+                    value = data[offset:offset + value_length].decode('utf-8')
+                    offset += value_length
 
                 meta_data[name] = value
                 print(f"Key: {name}, Value: {value}")
