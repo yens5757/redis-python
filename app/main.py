@@ -128,7 +128,7 @@ def parse_metadata(data):
         else:
             print("Unknown marker:", hex(marker))
             break
-
+        
 
 
 
