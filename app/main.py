@@ -127,7 +127,7 @@ def parse_metadata(data):
             print("Checksum:", checksum.hex())
         else:
             print("Unknown marker:", hex(marker))
-            break
+            break 
         
 
 
