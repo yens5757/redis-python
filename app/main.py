@@ -103,7 +103,7 @@ def parse_metadata(data):
                 # Read the name of the metadata attribute
                 name_length = data[offset]
                 offset += 1
-                name_bytes = data[offset:offset + name_length].decode('utf-8')
+                name_bytes = data[offset:offset + name_length]
                 offset += name_length
                 try:
                     name = name_bytes.decode('utf-8')  # Decode as UTF-8 if possible
