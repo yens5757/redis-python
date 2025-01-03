@@ -98,12 +98,25 @@ def parse_metadata(data):
     while offset < len(data):
         marker = data[offset]
         offset += 1
-        if marker == 0xFA:
-            length = data[offset]
-            offset += 1
-            key = data[offset:offset+length].decode('utf-8')
-            offset += length
-            print("Key:", key)
+        if marker == 0xFA:  # Start of a metadata subsection
+            try:
+                # Read the name of the metadata attribute
+                name_length = data[offset]
+                offset += 1
+                name = data[offset:offset + name_length].decode('utf-8')
+                offset += name_length
+                
+                # Read the value of the metadata attribute
+                value_length = data[offset]
+                offset += 1
+                value = data[offset:offset + value_length].decode('utf-8')
+                offset += value_length
+                
+                meta_data[name] = value
+                print(f"Key: {name}, Value: {value}")
+            except IndexError:
+                print("Error: Reached end of data unexpectedly while parsing metadata.")
+                break
         elif marker == 0xFB:
             value = struct.unpack('>I', data[offset:offset+4])[0]
             offset += 4
