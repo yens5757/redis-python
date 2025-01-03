@@ -109,7 +109,7 @@ def parse_metadata(data):
                     name = name_bytes.decode('utf-8')  # Decode as UTF-8 if possible
                 except UnicodeDecodeError:
                     name = name_bytes.hex()  # Fallback to hexadecimal representation
-                
+                 
                 # Read the value of the metadata attribute
                 value_length = data[offset]
                 offset += 1
