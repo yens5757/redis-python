@@ -103,16 +103,23 @@ def parse_metadata(data):
                 # Read the name of the metadata attribute
                 name_length = data[offset]
                 offset += 1
-                name = data[offset:offset + name_length].hex()
+                name_bytes = data[offset:offset + name_length].decode('utf-8')
                 offset += name_length
+                try:
+                    name = name_bytes.decode('utf-8')  # Decode as UTF-8 if possible
+                except UnicodeDecodeError:
+                    name = name_bytes.hex()  # Fallback to hexadecimal representation
                 
                 # Read the value of the metadata attribute
                 value_length = data[offset]
-                print(data[offset])
                 offset += 1
-                value = data[offset:offset + value_length].hex()
+                value_bytes = data[offset:offset + value_length]
                 offset += value_length
-                
+                try:
+                    value = value_bytes.decode('utf-8')  # Decode as UTF-8 if possible
+                except UnicodeDecodeError:
+                    value = value_bytes.hex()  # Fallback to hexadecimal representation
+
                 meta_data[name] = value
                 print(f"Key: {name}, Value: {value}")
             except IndexError:
