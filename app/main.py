@@ -117,18 +117,6 @@ def parse_metadata(data):
             except IndexError:
                 print("Error: Reached end of data unexpectedly while parsing metadata.")
                 break
-        elif marker == 0xFB:
-            value = struct.unpack('>I', data[offset:offset+4])[0]
-            offset += 4
-            print("Numeric Value:", value)
-        elif marker == 0xFF: 
-            checksum = data[offset:offset+6]
-            offset += 6
-            print("Checksum:", checksum.hex())
-        else:
-            print("Unknown marker:", hex(marker))
-            break 
-        
 
 
 
