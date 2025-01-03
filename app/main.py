@@ -93,7 +93,7 @@ async def handle_client(reader, writer):
             elif result[2] == "dbfilename":
                 writer.write(f"*2\r\n$10\r\ndbfilename\r\n${len(server_config["dbfilename"])}\r\n{server_config["dbfilename"]}\r\n".encode())
 
-def parse_data(data):
+def parse_metadata(data):
     offset = 0
     while offset < len(data):
         marker = data[offset]
@@ -105,24 +105,30 @@ def parse_data(data):
                 offset += 1
                 name = data[offset:offset + name_length].decode('utf-8')
                 offset += name_length
-
+                
                 # Read the value of the metadata attribute
                 value_length = data[offset]
+                print(data[offset])
                 offset += 1
-                value_bytes = data[offset:offset + value_length]
-
-                # Attempt to decode the value as UTF-8
-                try:
-                    value = value_bytes.decode('utf-8')
-                except UnicodeDecodeError:
-                    value = value_bytes.hex()  # If decoding fails, store as hex
-
-                offset += value_length
+                value = data[offset:offset + value_length]
+                
                 meta_data[name] = value
                 print(f"Key: {name}, Value: {value}")
             except IndexError:
-                print("Error: Unexpected end of data.")
+                print("Error: Reached end of data unexpectedly while parsing metadata.")
                 break
+        elif marker == 0xFB:
+            value = struct.unpack('>I', data[offset:offset+4])[0]
+            offset += 4
+            print("Numeric Value:", value)
+        elif marker == 0xFF: 
+            checksum = data[offset:offset+6]
+            offset += 6
+            print("Checksum:", checksum.hex())
+        else:
+            print("Unknown marker:", hex(marker))
+            break 
+        
 
 
 
@@ -141,7 +147,7 @@ def read_file(directory, filename):
         if not version.isdigit():
             print("version is not correct")
             return
-        parse_data(rdb_content[9:])
+        parse_metadata(rdb_content[9:])
 
 
 async def delete_key_after_delay(key, delay_ms):
