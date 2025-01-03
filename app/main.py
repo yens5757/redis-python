@@ -23,7 +23,7 @@ def parse_input(data):
         return data[1:].decode().strip()
     elif first_byte == b"-"[0]:  # Error
         return {"error": data[1:].decode().strip()}
-    elif first_byte == b":"[0]:  # Integer
+    elif first_byte == b":"[0]:  # Integer 
         return int(data[1:].strip())
     elif first_byte == b"$"[0]:  # Bulk String
         lines = data.split(b"\r\n")
