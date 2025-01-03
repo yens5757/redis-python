@@ -101,16 +101,16 @@ def parse_metadata(data):
         if marker == 0xFA:
             try:
                 # Read the name of the metadata attribute
-                name_length = data[offset].hex()
+                name_length = data[offset]
                 offset += 1
-                name = data[offset:offset + name_length].decode('utf-8')
+                name = data[offset:offset + name_length].hex()
                 offset += name_length
                 
                 # Read the value of the metadata attribute
-                value_length = data[offset].hex()
+                value_length = data[offset]
                 print(data[offset])
                 offset += 1
-                value = data[offset:offset + value_length].decode('utf-8')
+                value = data[offset:offset + value_length].hex()
                 offset += value_length
                 
                 meta_data[name] = value
